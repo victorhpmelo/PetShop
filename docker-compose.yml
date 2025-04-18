@@ -1,0 +1,32 @@
+services:
+  postgres:
+    image: postgres:17.4
+    container_name: petshop-db
+    environment:
+      POSTGRES_DB:
+      POSTGRES_USER:
+      POSTGRES_PASSWORD: 
+    ports:
+      - "54320:5432"
+    volumes:
+      - postgres:/z
+
+  backend:
+    build:
+      context: .
+    command: mvn spring-boot:run
+    container_name: petshop-api
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL:
+      SPRING_DATASOURCE_USERNAME:
+      SPRING_DATASOURCE_PASSWORD:
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_PROFILES_ACTIVE: dev
+    ports:
+      - "8080:8080"
+      - "5005:5005"
+
+volumes:
+  postgres:
