@@ -20,7 +20,6 @@ public class PetService {
     public Pet toEntity(PetDTO dto) {
         Pet pet = new Pet();
 
-        pet.setId(dto.id());
         pet.setName(dto.name());
         pet.setBirthDate(dto.birthDate());
         pet.setGender(dto.gender());
