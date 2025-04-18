@@ -4,9 +4,7 @@ import br.start.petshop.entities.Pet;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
-
 @Repository
-public interface IPetRepository extends JpaRepository<Pet, Long> {
+public interface PetRepository extends JpaRepository<Pet, Long> {
 
 }

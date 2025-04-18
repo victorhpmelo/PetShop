@@ -1,8 +1,8 @@
-package br.start.petshop.services.impl;
+package br.start.petshop.services;
 
 import br.start.petshop.DTOs.PetDTO;
 import br.start.petshop.entities.Pet;
-import br.start.petshop.repositories.IPetRepository;
+import br.start.petshop.repositories.PetRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -10,10 +10,10 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class PetService {
 
-    private IPetRepository repo;
+    private PetRepository repo;
 
 
-    private Pet toEntity(PetDTO dto) {
+    public Pet toEntity(PetDTO dto) {
         Pet pet = new Pet();
 
         pet.setId(dto.id());
@@ -34,8 +34,8 @@ public class PetService {
         return repo.save(pet);
     }
 
-    public Pet update(PetDTO dto) {
-        Pet pet = repo.findById(dto.id()).orElse(null);
+    public Pet update(Long id, PetDTO dto) {
+        Pet pet = repo.findById(id).orElse(null);
         if (pet != null) {
         pet = toEntity(dto);
         return repo.save(pet);
