@@ -1,9 +1,12 @@
 package br.start.petshop.services;
 
+import br.start.petshop.DTOs.ClientDTO;
 import br.start.petshop.DTOs.PetDTO;
+import br.start.petshop.entities.Clients;
 import br.start.petshop.entities.Pet;
 import br.start.petshop.exceptions.NotFoundException;
 import br.start.petshop.exceptions.NullException;
+import br.start.petshop.repositories.ClientRepository;
 import br.start.petshop.repositories.PetRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,12 +22,14 @@ import lombok.extern.slf4j.Slf4j;
 public class PetService {
 
     private PetRepository repo;
+    private ClientRepository clientRepo;
 
     public Pet toEntity(PetDTO dto) {
         log.info("Converting PetDTO to Pet entity: {}", dto.name());
 
             Pet pet = new Pet();
 
+            Optional<Clients> client = clientRepo.findById(dto.clientId());
             pet.setName(dto.name());
             pet.setBirthDate(dto.birthDate());
             pet.setGender(dto.gender());
@@ -32,6 +37,7 @@ public class PetService {
             pet.setBreed(dto.breed());
             pet.setSize(dto.size());
             pet.setServiceType(dto.serviceType());
+            pet.setClient(client.get());
 
             return pet;
         }
@@ -41,7 +47,8 @@ public class PetService {
         List<Pet> pets = repo.findAll();
         if (!pets.isEmpty()) {
             return pets;
-        } else {
+        }
+        else {
             log.warn("No pets found in the database");
             throw new NotFoundException("Pets not found");
         }
@@ -80,6 +87,7 @@ public class PetService {
     public Pet update(Long id, PetDTO dto) {
         log.info("Updating pet with id: {}", id);
         return repo.findById(id).map(pet -> {
+            Optional<Clients> client = clientRepo.findById(dto.clientId());
             pet.setName(dto.name());
             pet.setBirthDate(dto.birthDate());
             pet.setGender(dto.gender());
@@ -87,6 +95,7 @@ public class PetService {
             pet.setBreed(dto.breed());
             pet.setSize(dto.size());
             pet.setServiceType(dto.serviceType());
+            pet.setClient(client.get());
             return repo.save(pet);
         }).orElseThrow(() -> {
             log.warn("Pet with id {} not found for update", id);

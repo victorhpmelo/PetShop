@@ -22,10 +22,15 @@ public class Clients {
     private String name;
 
     @Email
+    @Column(unique = true)
     private String email;
 
+    @Column(unique = true)
     private String phone;
 
-    @OneToMany(mappedBy = "clients", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Pet> pets;
+
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Appointment> appointments;
 }
