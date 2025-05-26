@@ -30,7 +30,7 @@ public class PetController {
     public Optional<Pet> getPetById(@PathVariable Long id) {return service.getById(id);}
 
     @Operation(summary = "Return all pets registered in the database by its Species")
-    @GetMapping("{species}")
+    @GetMapping("species/{species}")
     public List<Pet> getPetById(@PathVariable String species) {return service.getBySpecies(species);}
 
     @Operation(summary = "Register a pet in the database")
