@@ -3,9 +3,9 @@ services:
     image: postgres:17.4
     container_name: petshop-db
     environment:
-      POSTGRES_DB:
-      POSTGRES_USER:
-      POSTGRES_PASSWORD:
+      POSTGRES_DB: petshop
+      POSTGRES_USER: petshop
+      POSTGRES_PASSWORD: petshop
     ports:
       - "54320:5432"
     volumes:
@@ -20,8 +20,8 @@ services:
       - postgres
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/petshop
-      SPRING_DATASOURCE_USERNAME:
-      SPRING_DATASOURCE_PASSWORD:
+      SPRING_DATASOURCE_USERNAME: petshop
+      SPRING_DATASOURCE_PASSWORD: petshop
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_PROFILES_ACTIVE: dev
     ports:

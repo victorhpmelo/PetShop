@@ -8,6 +8,7 @@ import br.start.petshop.repositories.PetRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,6 +32,29 @@ public class PetService {
         return pet;
     }
 
+    public List<Pet> getAll(){
+        return repo.findAll();
+    }
+
+    public Optional<Pet> getById(Long id) {
+        Optional<Pet> findPet = repo.findById(id);
+        if (findPet.isPresent()){
+            return findPet;
+        }
+        else {
+            throw new NotFoundException("Pet not found");
+        }
+    }
+
+    public List<Pet> getBySpecies(String species){
+        List<Pet> findPet = repo.findBySpecies(species);
+        if (!findPet.isEmpty()){
+            return findPet;
+        }
+        else {
+            throw new NullException("Pet with this Species not found");
+        }
+    }
 
     public Pet save(PetDTO dto) {
         Pet pet = toEntity(dto);
