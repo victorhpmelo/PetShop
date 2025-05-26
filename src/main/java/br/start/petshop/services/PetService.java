@@ -11,63 +11,20 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 @AllArgsConstructor
 public class PetService {
 
     private PetRepository repo;
 
-
     public Pet toEntity(PetDTO dto) {
-        Pet pet = new Pet();
+        log.info("Converting PetDTO to Pet entity: {}", dto.name());
 
-        pet.setName(dto.name());
-        pet.setBirthDate(dto.birthDate());
-        pet.setGender(dto.gender());
-        pet.setSpecies(dto.species());
-        pet.setBreed(dto.breed());
-        pet.setSize(dto.size());
-        pet.setServiceType(dto.serviceType());
+            Pet pet = new Pet();
 
-        return pet;
-    }
-
-    public List<Pet> getAll(){
-        return repo.findAll();
-    }
-
-    public Optional<Pet> getById(Long id) {
-        Optional<Pet> findPet = repo.findById(id);
-        if (findPet.isPresent()){
-            return findPet;
-        }
-        else {
-            throw new NotFoundException("Pet not found");
-        }
-    }
-
-    public List<Pet> getBySpecies(String species){
-        List<Pet> findPet = repo.findBySpecies(species);
-        if (!findPet.isEmpty()){
-            return findPet;
-        }
-        else {
-            throw new NullException("Pet with this Species not found");
-        }
-    }
-
-    public Pet save(PetDTO dto) {
-        Pet pet = toEntity(dto);
-        if(pet != null) {
-        return repo.save(pet);
-        }
-        else throw new NullException("Pet is null");
-    }
-
-    public Pet update(Long id, PetDTO dto) {
-        Optional<Pet> optionalPet = repo.findById(id);
-        if (optionalPet.isPresent()) {
-            Pet pet = optionalPet.get();
             pet.setName(dto.name());
             pet.setBirthDate(dto.birthDate());
             pet.setGender(dto.gender());
@@ -76,20 +33,73 @@ public class PetService {
             pet.setSize(dto.size());
             pet.setServiceType(dto.serviceType());
 
-            return repo.save(pet);
+            return pet;
+        }
+
+    public List<Pet> getAll(){
+        log.info("Fetching all pets");
+        List<Pet> pets = repo.findAll();
+        if (!pets.isEmpty()) {
+            return pets;
         } else {
-        throw new NotFoundException("Pet not found with id: " + id);
+            log.warn("No pets found in the database");
+            throw new NotFoundException("Pets not found");
         }
     }
 
-    public void delete(final Long id) {
+    public Optional<Pet> getById(Long id) {
+        log.info("Searching for pet with id: {}", id);
+        return repo.findById(id).or(() -> {
+            log.warn("Pet with id {} not found", id);
+            throw new NotFoundException("Pet not found");
+        });
+    }
 
-        Optional<Pet> pet = repo.findById(id);
-        if (pet.isPresent()) {
-
-        repo.deleteById(id);
+    public List<Pet> getBySpecies(String species){
+        log.info("Fetching pets by species: {}", species);
+        List<Pet> pets = repo.findBySpecies(species);
+        if (!pets.isEmpty()) {
+            return pets;
+        } else {
+            log.warn("No pets found with species: {}", species);
+            throw new NotFoundException("Pet with this Species not found");
         }
-        else {
+    }
+
+    public Pet save(PetDTO dto) {
+        log.info("Saving new pet: {}", dto.name());
+        Pet pet = toEntity(dto);
+        if(pet != null) {
+            return repo.save(pet);
+        } else {
+            log.error("PetDTO is null");
+            throw new NullException("Pet is null");
+        }
+    }
+
+    public Pet update(Long id, PetDTO dto) {
+        log.info("Updating pet with id: {}", id);
+        return repo.findById(id).map(pet -> {
+            pet.setName(dto.name());
+            pet.setBirthDate(dto.birthDate());
+            pet.setGender(dto.gender());
+            pet.setSpecies(dto.species());
+            pet.setBreed(dto.breed());
+            pet.setSize(dto.size());
+            pet.setServiceType(dto.serviceType());
+            return repo.save(pet);
+        }).orElseThrow(() -> {
+            log.warn("Pet with id {} not found for update", id);
+            return new NotFoundException("Pet not found with id: " + id);
+        });
+    }
+
+    public void delete(final Long id) {
+        log.info("Deleting pet with id: {}", id);
+        if (repo.findById(id).isPresent()) {
+            repo.deleteById(id);
+        } else {
+            log.warn("Pet with id {} not found for deletion", id);
             throw new NotFoundException("Pet not found with id: " + id);
         }
     }

@@ -1,47 +1,35 @@
 package br.start.petshop.entities;
 
-import br.start.petshop.enums.GenderEnum;
 import br.start.petshop.enums.ServiceEnum;
-import br.start.petshop.enums.SizeEnum;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Data
 @Entity
-@Table
+@Table(name = "appointment")
 @NoArgsConstructor
-public class Pet {
+public class Appointment {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    private String name;
+    @ManyToOne
+    @JoinColumn(name = "pet_id")
+    private Pet pet;
 
-    @JsonFormat(pattern = "dd-MM-yyyy")
-    private Date birthDate;
-
-    @Enumerated(STRING)
-    private GenderEnum gender;
-
-    private String species;
-
-    private String breed;
-
-    @Enumerated(STRING)
-    private SizeEnum size;
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm")
+    private LocalDateTime dateTime;
 
     @Enumerated(STRING)
     private ServiceEnum serviceType;
 
-    @ManyToOne
-    @JoinColumn(name = "client_id")
-    private Clients client;
+    private String notes;
 }
