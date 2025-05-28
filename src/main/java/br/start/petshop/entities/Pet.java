@@ -3,6 +3,7 @@ package br.start.petshop.entities;
 import br.start.petshop.enums.GenderEnum;
 import br.start.petshop.enums.ServiceEnum;
 import br.start.petshop.enums.SizeEnum;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -43,5 +44,6 @@ public class Pet {
 
     @ManyToOne
     @JoinColumn(name = "client_id")
+    @JsonBackReference
     private Clients client;
 }

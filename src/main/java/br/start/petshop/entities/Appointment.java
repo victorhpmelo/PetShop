@@ -1,6 +1,7 @@
 package br.start.petshop.entities;
 
 import br.start.petshop.enums.ServiceEnum;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -27,6 +28,7 @@ public class Appointment {
 
     @ManyToOne
     @JoinColumn(name ="client_id")
+    @JsonBackReference
     private Clients client;
 
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm")

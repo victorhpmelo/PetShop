@@ -29,16 +29,24 @@ public class AppointmentService {
         log.info("Attempting to convert AppointmentDTO to Appointment entity");
 
         Appointment appointment = new Appointment();
-        Optional<Clients> client = clientRepo.findById(dto.clientId());
-        Optional<Pet> pet = petRepo.findById(dto.petId());
+        Clients client = clientRepo.findById(dto.clientId())
+                .orElseThrow(() -> new NotFoundException("Client not found with id: " + dto.clientId()));
+        Pet pet = petRepo.findById(dto.petId())
+                .orElseThrow(() -> new NotFoundException("Pet not found with id: " + dto.petId()));
+
         appointment.setDateTime(dto.appointmentDateTime());
-        appointment.setClient(client.get());
-        appointment.setPet(pet.get());
+        appointment.setClient(client);
+        appointment.setPet(pet);
         appointment.setServiceType(dto.serviceType());
+
+        if (!dto.notes().isEmpty()){
+            appointment.setNotes(dto.notes());
+        }
 
         log.info("Conversion was successful");
         return appointment;
     }
+
 
     public List<Appointment> getAll() {
         log.info("Fetching all appointments");
@@ -67,15 +75,9 @@ public class AppointmentService {
     public Appointment save(AppointmentDTO dto) {
         log.info("Attempting to create appointment for client with id: {}", dto.clientId());
         Appointment appointment = toEntity(dto);
-        if (appointment.getId() != null) {
-            log.info("Saving appointment with id: {}", appointment.getId());
-            return repo.save(appointment);
-        }
-        else {
-            log.warn("Client not created");
-            throw new NullException("Client not created");
-        }
+        return repo.save(appointment);
     }
+
 
     public Appointment update(Long id, AppointmentDTO dto) {
         log.info("Updating appointment with id: {}", id);
