@@ -14,7 +14,7 @@ services:
   backend:
     build:
       context: .
-    command: mvn test
+    command: mvn spring-boot:run
     container_name: petshop-api
     depends_on:
       - postgres

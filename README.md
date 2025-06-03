@@ -1,108 +1,362 @@
-# PetShop API
+PetShop API
 
-Uma API simples que simula o cadastro de animais em um PetShop, desenvolvida como parte do curso Start.
+ API REST desenvolvida em Java com Spring Boot para gerenciamento de pets, clientes e agendamentos em um PetShop. Permite cadastrar, listar, buscar, atualizar e remover animais, clientes e agendamentos, além de consultar pets por espécie e agendamentos por cliente. Documentação interativa disponível via Swagger/OpenAPI.
 
-## Funcionalidades
+ ---
 
-- **Operações CRUD**: Gerencie pets e seus serviços.
-- **Integração com Banco de Dados**: Utiliza PostgreSQL como banco de dados.
-- **Documentação OpenAPI**: Swagger UI integrado para documentação da API.
-- **Spring Boot**: Construída com Spring Boot para desenvolvimento rápido.
+ ## Funcionalidades
 
-## Tecnologias Utilizadas
+ - Pets
 
-- **Java 17**
-- **Spring Boot 3.4.4**
-- **PostgreSQL**
-- **Lombok**
-- **SpringDoc OpenAPI**
+ - Cadastro, listagem, busca por ID, busca por espécie, atualização e remoção de pets.
 
-## Endpoints
+ - Clientes
 
-### Pets
+ - Cadastro, listagem, busca por ID, busca por e-mail, atualização e remoção de clientes.
 
-- **GET /pets**  
-  Retorna todos os pets cadastrados no banco de dados.
+ - Agendamentos
 
-- **GET /pets/{id}**  
-  Retorna um pet pelo seu ID.
+ - Cadastro, listagem, busca por cliente, atualização e remoção de agendamentos.
 
-- **POST /pets**  
-  Cadastra um novo pet no banco de dados.  
-  **Exemplo de Corpo da Requisição**:  
-  ```json
-  {
-    "name": "Buddy",
-    "birthDate": "01-01-2020",
-    "gender": "M",
-    "species": "Cachorro",
-    "breed": "Golden Retriever",
-    "size": "L",
-    "serviceType": "GROOMING"
-  }
-  ```
+ - Validações
 
-- **PUT /pets/{id}**  
-  Atualiza os dados de um pet existente.  
-  **Corpo da Requisição**: Igual ao POST.
+ - Validação de campos obrigatórios, formatos de data e integridade referencial.
 
-- **DELETE /pets/{id}**  
-  Exclui um pet pelo seu ID.
+ - Tratamento de erros
 
-## Instruções de Configuração
+ - Respostas padronizadas para erros de validação, não encontrado e exceções genéricas.
 
-### Pré-requisitos
+ - Documentação automática
 
-- Java 17
-- Maven
-- Docker (opcional, para rodar o PostgreSQL)
+ - Swagger/OpenAPI disponível em /swagger-ui.html.
 
-### Executando a Aplicação
+ ---
 
-1. Clone o repositório:
-   ```bash
-   git clone https://github.com/seu-repositorio/petshop-api.git
-   cd petshop-api
-   ```
+ ## Principais Endpoints
 
-2. Configure o banco de dados:
-   - Atualize o arquivo `application.properties` em `src/main/resources` com as credenciais do seu PostgreSQL:
-     ```properties
-     spring.datasource.url=jdbc:postgresql://localhost:5432/db
-     spring.datasource.username=seu_usuario
-     spring.datasource.password=sua_senha
-     spring.jpa.hibernate.ddl-auto=update
-     ```
+ ### Pets
 
-3. Inicie a aplicação:
-   ```bash
-   ./mvnw spring-boot:run
-   ```
+ - GET /pets — Lista todos os pets.
 
-4. Acesse a documentação da API em:  
-   [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+ - GET /pets/{id} — Busca pet por ID.
 
-### Executando com Docker
+ - GET /pets/species/{species} — Busca pets por espécie.
 
-1. Construa e inicie os containers:
-   ```bash
-   docker-compose up --build
-   ```
+ - POST /pets — Cadastra novo pet.
 
-2. Acesse a API em:  
-   [http://localhost:8080](http://localhost:8080)
+ - PUT /pets/{id} — Atualiza pet existente.
 
-## Estrutura do Projeto
+ - DELETE /pets/{id} — Remove pet.
 
-- `src/main/java/br/start/petshop`  
-  Contém o código principal da aplicação, incluindo controllers, services, entities e repositories.
+ ### Clientes
 
-- `src/main/resources`  
-  Contém arquivos de configuração, como `application.properties`.
+ - GET /clients — Lista todos os clientes.
 
-- `docker-compose.yml`  
-  Define os serviços Docker para a aplicação e o PostgreSQL.
+ - GET /clients/{id} — Busca cliente por ID.
 
-## Licença
+ - GET /clients/email/{email} — Busca cliente por e-mail.
 
-Este projeto está licenciado sob a Licença Apache 2.0. Consulte o arquivo [LICENSE](http://www.apache.org/licenses/LICENSE-2.0) para mais detalhes.
+ - POST /clients — Cadastra novo cliente.
+
+ - PUT /clients/{id} — Atualiza cliente existente.
+
+ - DELETE /clients/{id} — Remove cliente.
+
+ ### Agendamentos
+
+ - GET /appointments — Lista todos os agendamentos.
+
+ - GET /appointments/client/{clientId} — Lista agendamentos de um cliente.
+
+ - POST /appointments — Cadastra novo agendamento.
+
+ - PUT /appointments/{id} — Atualiza agendamento.
+
+ - DELETE /appointments/{id} — Remove agendamento.
+
+ ---
+
+ ## Exemplos de Requisição
+
+ ### Cadastro de Pet
+
+ json
+
+ {
+  
+     "name": "Rex",
+
+   "birthDate": "01-01-2020",
+
+   "gender": "M",
+
+   "species": "Cachorro",
+
+   "breed": "Labrador",
+
+   "size": "L",
+
+   "serviceType": "GROOMING",
+
+   "clientId": 1
+
+ }
+
+ 
+
+ ### Cadastro de Cliente
+
+ json
+
+ {
+  
+     "name": "Maria Silva",
+
+   "email": "maria@email.com",
+
+   "phone": "11999999999",
+
+   "petIds": [1, 2],
+
+   "appointmentIds": [1]
+
+ }
+
+ 
+
+ ### Cadastro de Agendamento
+
+ json
+
+ {
+  
+     "clientId": 1,
+
+   "petId": 1,
+
+   "appointmentDateTime": "10-06-2025 14:00",
+
+   "serviceType": "BATHING",
+
+   "notes": "Banho especial"
+
+ }
+
+ 
+
+ ---
+
+ ## Variáveis de Ambiente
+
+ Configure as seguintes variáveis de ambiente para conexão com o banco de dados:
+
+ - SPRING_DATASOURCE_URL (ex: jdbc:postgresql://localhost:5432/petshop)
+
+ - SPRING_DATASOURCE_USERNAME
+
+ - SPRING_DATASOURCE_PASSWORD
+
+ - SPRING_JPA_HIBERNATE_DDL_AUTO (ex: update)
+
+ - SPRING_PROFILES_ACTIVE (ex: dev)
+
+ No Docker Compose, já estão configuradas para uso local.
+
+ ---
+
+ ## Como Executar
+
+ ### Com Docker
+
+ 1. Execute:
+
+ bash
+
+    docker-compose up --build
+
+    
+
+ 2. Acesse a API em http://localhost:8080
+
+ 3. Acesse a documentação Swagger em http://localhost:8080/swagger-ui.html
+
+ ### Manualmente
+
+ 1. Configure as variáveis de ambiente ou o arquivo application.properties.
+
+ 2. Execute:
+
+ bash
+
+    ./mvnw spring-boot:run
+
+    
+
+ ---
+
+ ## Estrutura do Projeto
+
+ - src/main/java/br/start/petshop/controllers — Controllers REST
+
+ - src/main/java/br/start/petshop/services — Regras de negócio
+
+ - src/main/java/br/start/petshop/entities — Entidades JPA
+
+ - src/main/java/br/start/petshop/DTOs — Data Transfer Objects
+
+ - src/main/java/br/start/petshop/enums — Enums de domínio
+
+ - src/main/java/br/start/petshop/repositories — Repositórios JPA
+
+ - src/main/java/br/start/petshop/exceptions — Tratamento de exceções
+
+ - docker-compose.yml — Orquestração de containers
+
+ - pom.xml — Dependências Maven
+
+ ---
+
+ ## Licença
+
+ Projeto licenciado sob Apache 2.0. Veja o arquivo LICENSE.
+
+json
+
+ {
+  
+     "name": "Rex",
+
+      "birthDate": "01-01-2020",
+
+      "gender": "M",
+
+      "species": "Cachorro",
+
+      "breed": "Labrador",
+
+      "size": "L",
+
+      "serviceType": "GROOMING",
+
+      "clientId": 1
+
+ }
+
+ 
+
+ ### Cadastro de Cliente
+
+ json
+
+ {
+  
+     "name": "Maria Silva",
+
+      "email": "maria@email.com",
+
+      "phone": "11999999999",
+
+      "petIds": [1, 2],
+
+      "appointmentIds": [1]
+
+ }
+
+ 
+
+ ### Cadastro de Agendamento
+
+ json
+
+ {
+  
+     "clientId": 1,
+
+      "petId": 1,
+
+      "appointmentDateTime": "10-06-2025 14:00",
+
+      "serviceType": "BATHING",
+
+      "notes": "Banho especial"
+
+ }
+
+ 
+
+ ---
+
+ ## Variáveis de Ambiente
+
+ Configure as seguintes variáveis de ambiente para conexão com o banco de dados:
+
+ - SPRING_DATASOURCE_URL (ex: jdbc:postgresql://localhost:5432/petshop)
+
+ - SPRING_DATASOURCE_USERNAME
+
+ - SPRING_DATASOURCE_PASSWORD
+
+ - SPRING_JPA_HIBERNATE_DDL_AUTO (ex: update)
+
+ - SPRING_PROFILES_ACTIVE (ex: dev)
+
+ No Docker Compose, já estão configuradas para uso local.
+
+ ---
+
+ ## Como Executar
+
+ ### Com Docker
+
+ 1. Execute:
+
+ bash
+
+    docker-compose up --build
+
+    
+
+ 2. Acesse a API em http://localhost:8080
+
+ 3. Acesse a documentação Swagger em http://localhost:8080/swagger-ui.html
+
+ ### Manualmente
+
+ 1. Configure as variáveis de ambiente ou o arquivo application.properties.
+
+ 2. Execute:
+
+ bash
+
+    ./mvnw spring-boot:run
+
+    
+
+ ---
+
+ ## Estrutura do Projeto
+
+ - src/main/java/br/start/petshop/controllers — Controllers REST
+
+ - src/main/java/br/start/petshop/services — Regras de negócio
+
+ - src/main/java/br/start/petshop/entities — Entidades JPA
+
+ - src/main/java/br/start/petshop/DTOs — Data Transfer Objects
+
+ - src/main/java/br/start/petshop/enums — Enums de domínio
+
+ - src/main/java/br/start/petshop/repositories — Repositórios JPA
+
+ - src/main/java/br/start/petshop/exceptions — Tratamento de exceções
+
+ - docker-compose.yml — Orquestração de containers
+
+ - pom.xml — Dependências Maven
+
+ ---
+
+ ## Licença
+
+ Projeto licenciado sob Apache 2.0. Veja o arquivo LICENSE.
+
